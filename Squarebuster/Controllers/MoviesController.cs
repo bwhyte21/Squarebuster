@@ -1,41 +1,62 @@
 ﻿using Squarebuster.Models;
-using System;
+using Squarebuster.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace Squarebuster.Controllers
 {
     public class MoviesController : Controller
     {
+        // GET: Movies
+        public ViewResult Index()
+        {
+            var movies = GetMovies();
+
+            return View(movies);
+        }
+
+        public ActionResult Details(int id)
+        {
+            var movies = GetMovies().SingleOrDefault(c => c.Id == id);
+
+            if (movies == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(movies);
+        }
+
+        private IEnumerable<Movie> GetMovies()
+        {
+            return new List<Movie>
+            {
+                new Movie { Id = 1, Name = "The Mask" },
+                new Movie { Id = 2, Name = "The 40 Year Old Virgin" }
+            };
+        }
+
         // GET: Movies/Random
         public ActionResult Random()
         {
             var movie = new Movie() { Name = "Shrek!" };
 
-            return View(movie);
-            //return Content("Hello World!");
-            //return HttpNotFound();
-            //return new EmptyResult();
-            //return RedirectToAction("Index", "Home", new { page = 1, sortBy = "name" });
+            var customers = new List<Customer>
+            {
+                new Customer {Name = "Customer1"},
+                new Customer {Name = "Customer2"}
+            };
+            // init movie prop and customers prop
+            var viewModel = new RandomMovieViewModel
+            {
+                Movie = movie,
+                Customers = customers
+            };
+
+            return View(viewModel);
         }
 
-        public ActionResult Edit(int id)
-        {
-            return Content("id=" + id);
-        }
-
-        // GET: Movies
-        // ? makes it a nullable int and string is a reference type, making it nullable
-        public ActionResult Index(int? pageIndex, string sortBy)
-        {
-            if (!pageIndex.HasValue)
-            {
-                pageIndex = 1;
-            }
-            if (String.IsNullOrWhiteSpace(sortBy))
-            {
-                sortBy = "Name";
-            }
-            return Content(String.Format("pageIndex={0}&sortBy={1}", pageIndex, sortBy));
-        }
+     
     }
 }
