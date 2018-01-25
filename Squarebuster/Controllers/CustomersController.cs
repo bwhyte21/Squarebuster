@@ -29,7 +29,7 @@ namespace Squarebuster.Controllers
 
         public ActionResult Details(int id)
         {
-            var customer = _context.Customers.SingleOrDefault(c => c.Id == id); // immediately executes query
+            var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id); // immediately executes query
 
             if (customer == null)
             {
